@@ -1,93 +1,108 @@
-# CC - Code Colony
+# CodeColony
 
- > Descripción Temporal
+## Descripción
 
-CodeColony es una aplicación web interactiva, con un enfoque propio centrado en la enseñanza y aplicación avanzada de la Programación Orientada a Objetos (POO) mediante TypeScript.
+**CodeColony** es una aplicación web interactiva para aprender y practicar **Programación Orientada a Objetos (POO)** usando **TypeScript**.  
 
-El usuario podrá crear y gestionar una colonia virtual cuyos elementos (unidades, estructuras, recursos, etc.) se controlan a través de código. Cada elemento del juego será un objeto programable que representará entidades con relaciones, herencias y comportamientos definidos.
+Los jugadores crean y gestionan una colonia virtual cuyos elementos —unidades, estructuras, recursos, etc.— se controlan mediante código. Cada entidad del juego será un **objeto programable** con sus propias relaciones, herencias y comportamientos.  
 
-El objetivo es ofrecer una experiencia tanto lúdica como educativa, donde los jugadores apliquen conceptos de programación en un entorno visual e interactivo.
+El objetivo es ofrecer una experiencia **educativa y lúdica**, aplicando conceptos de programación en un entorno visual e interactivo.
 
-### Integrantes del equipo
+---
 
- - [ ] Basurco Casani, Jeferson Joao
- - [ ] Betanzos Rosas, Taylor Anthony
- - [ ] Ccosco Alvis, Italo Frankdux
- - [ ] Pachari Quispe, Jorge Pachari
- - [ ] Huayhua Hillpa, Yourdyy Yossimar
- 
-## Tecnologías a utilizar
+## Equipo
 
- - TypeScript
- - Node.js
- - Express
- - HTML
- - CSS
- - Docker
- - Git y GitHub
+- Basurco Casani, Jeferson Joao  
+- Betanzos Rosas, Taylor Anthony  
+- Ccosco Alvis, Italo Frankdux  
+- Pachari Quispe, Jorge Pachari  
+- Huayhua Hillpa, Yourdyy Yossimar  
 
-## Plan de trabajo — 5 semanas aproximadamente
+---
+
+## Tecnologías
+
+- **Lenguajes:** TypeScript, HTML, CSS  
+- **Backend:** Node.js, Express  
+- **Contenedores:** Docker  
+- **Control de versiones:** Git y GitHub  
+
+---
+
+## Estructura del proyecto
+
+CodeColony/
+├─ backend/ # Servidor y lógica del juego
+├─ frontend/ # Interfaz web
+├─ assets/ # Imágenes y recursos gráficos
+├─ scripts/ # Scripts de inicialización y utilidades
+├─ docker/ # Configuraciones Docker y Compose
+└─ README.md # Documentación
+
+
+---
+
+## Plan de trabajo
+
 ### Semana 1 — Fundamentos y arquitectura
+**Objetivo:** Base sólida del proyecto  
+**Tareas:**
+- Configurar entorno (Node.js, TypeScript, Express)  
+- Configurar Docker  
+- Diseñar estructura de carpetas  
+- Documentación inicial  
+- Servidor Express básico  
 
-_Objetivo:_ Tener la base sólida del proyecto lista para desarrollar.
-Tareas:
- - [ ] Configurar entorno de desarrollo con Node.js, TypeScript y Express.
- - [ ] Configurar Docker para ejecución del proyecto.
- - [ ] Diseñar la estructura de carpetas (backend, frontend, assets, etc.).
- - [ ] Escribir documentación inicial 
- - [ ] Implementar un servidor Express que sirva una página base con un mensaje inicial.
-
- > Entregable: Proyecto ejecutable en Docker y corriendo con un servidor Express básico.
+**Entregable:** Proyecto ejecutable en Docker con servidor básico
 
 ---
+
 ### Semana 2 — Lógica del juego y modelo de objetos (POO)
+**Objetivo:** Sistema base de entidades y comportamiento  
+**Tareas:**
+- Definir clases: `Unidad`, `Estructura`, `Recurso`, `Jugador`  
+- Implementar relaciones entre objetos  
+- Crear `GameEngine`  
+- Simulación básica (tick del juego)  
+- Crear/editar objetos mediante código del usuario  
 
-_Objetivo:_ Implementar el sistema base de entidades y comportamiento del juego.
-Tareas:
- - [ ] Definir las clases principales: Unidad, Estructura, Recurso, Jugador.
- - [ ] Implementar relaciones entre objetos.
- - [ ] Crear un controlador del mundo (GameEngine) que gestione el estado global.
- - [ ] Agregar simulación básica (tick del juego o ciclo de actualización).
- - [ ] Permitir modificar o crear objetos mediante código del usuario (por consola o editor embebido).
-
- > Entregable: Motor lógico del juego ejecutándose desde Node, con entidades funcionales.
+**Entregable:** Motor lógico funcional desde Node
 
 ---
+
 ### Semana 3 — Interfaz web interactiva
+**Objetivo:** Base visual en el navegador  
+**Tareas:**
+- Frontend con HTML, CSS, TypeScript  
+- Canvas 2D para renderizar entidades  
+- Sincronización con backend via REST y WebSocket  
+- Consola/panel para código de usuario  
 
-_Objetivo:_ Crear la base visual del juego en el navegador.
-Tareas:
- - [ ] Crear frontend HTML + CSS + TypeScript
- - [ ] Mostrar un canvas 2D con las entidades del mundo.
- - [ ] Renderizar posiciones y estados de las unidades y estructuras.
- - [ ] Sincronizar datos con el backend via REST y WebSocket básico.
- - [ ] Mostrar una consola o panel para escribir código y controlar entidades.
-
- > Entregable: Mundo visual básico donde se ve movimiento o interacción simple.
+**Entregable:** Mundo visual básico con interacción
 
 ---
+
 ### Semana 4 — Programación del usuario y simulación avanzada
+**Objetivo:** Control de objetos mediante código  
+**Tareas:**
+- Intérprete/sandbox de scripts  
+- Permitir control de unidades mediante código  
+- Integrar acciones con `GameEngine`  
+- Validaciones y errores amigables  
+- Persistencia temporal (memoria o JSON)  
 
-_Objetivo:_ Hacer que el jugador pueda controlar objetos mediante código.
-Tareas:
- - [ ] Implementar un intérprete o sandbox de scripts.
- - [ ] Permitir que los usuarios escriban código para manejar sus unidades.
- - [ ] Integrar estas acciones con el motor (GameEngine).
- - [ ] Agregar validaciones y mensajes de error legibles.
- - [ ] Añadir persistencia temporal (estado del mundo en memoria o JSON).
-
- > Entregable: Jugador puede escribir código para manipular entidades dentro del juego.
+**Entregable:** Usuario puede manipular entidades escribiendo código
 
 ---
-### Semana 5 — Pulido, visuales y despliegue
 
-_Objetivo:_ Convertirlo en un producto completo y presentable.
-Tareas:
- - [ ] Mejorar la interfaz (colores, iconos, efectos visuales básicos).
- - [ ] Añadir panel de control para reiniciar mundo o cargar scripts.
- - [ ] Documentar API interna y estructura de clases.
- - [ ] Integrar Docker Compose para correr backend y frontend juntos.
- - [ ] Desplegar en Railway o AWS-EC2.
- - [ ] Crear presentación final del proyecto.
+### Semana 5 — Pulido visual y despliegue
+**Objetivo:** Versión completa y presentable  
+**Tareas:**
+- Mejorar interfaz (colores, iconos, efectos)  
+- Panel de control para reiniciar mundo o cargar scripts  
+- Documentar API y estructura de clases  
+- Integrar Docker Compose  
+- Desplegar en Railway o AWS-EC2  
+- Preparar presentación final  
 
- > Entregable: Versión funcional de CodeColony lista.
+**Entregable:** Versión funcional lista para mostrar
