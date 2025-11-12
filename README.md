@@ -10,17 +10,15 @@ Code Colony es una plataforma web educativa que combina elementos de simulación
 
 Los usuarios interactúan con una colonia virtual donde cada componente del sistema - unidades, estructuras, recursos y medio ambiente - funciona como un objeto programable. Esta aproximación permite experimentar directamente con conceptos avanzados de POO dentro de un contexto visual y tangible.
 
-La plataforma está diseñada para servir como herramienta educativa en el ámbito académico, proporcionando un espacio seguro para la experimentación con patrones de diseño, estructuras de datos y arquitecturas de software complejas.
-
 ---
 
 ## Equipo de Desarrollo
 
-- Basurco Casani, Jeferson Joao - Líder de Backend
-- Betanzos Rosas, Taylor Anthony - Arquitecto de Motor de Juego
-- Ccosco Alvis, Italo Frankdux - Desarrollador Frontend
-- Pachari Quispe, Jorge Pachari - Especialista en Base de Datos
-- Huayhua Hillpa, Yourdyy Yossimar - Ingeniero de Sistemas
+ - [ ] Basurco Casani, Jeferson Joao 
+ - [ ] Betanzos Rosas, Taylor Anthony 
+ - [ ] Ccosco Alvis, Italo Frankdux 
+ - [ ] Pachari Quispe, Jorge Pachari 
+ - [ ] Huayhua Hillpa, Yourdyy Yossimar
 
 ---
 
@@ -37,16 +35,6 @@ Crear una plataforma web de simulación que permita a los usuarios aplicar princ
 - Construir una interfaz visual que represente el estado del mundo simulado y las interacciones entre entidades
 - Crear un sistema de ejecución segura para código de usuario con limitaciones de acceso y recursos
 - Establecer una arquitectura modular que facilite la expansión futura del proyecto
-
----
-
-## Fundamentación del Proyecto
-
-Code Colony aborda la necesidad de herramientas educativas prácticas para la enseñanza de Programación Orientada a Objetos. Tradicionalmente, los conceptos de POO se enseñan mediante ejemplos abstractos o proyectos simples que no capturan la complejidad de aplicaciones del mundo real.
-
-Esta plataforma proporciona un contexto tangible donde los estudiantes pueden observar directamente las consecuencias de sus decisiones de diseño, experimentar con patrones arquitectónicos y comprender las implicaciones de relaciones entre objetos en un sistema en ejecución.
-
-El enfoque en TypeScript como lenguaje de implementación responde a su creciente adopción en la industria y sus características de tipado estático que facilitan el desarrollo de sistemas robustos y mantenibles.
 
 ---
 
@@ -73,7 +61,7 @@ El enfoque en TypeScript como lenguaje de implementación responde a su crecient
 
 ### Componentes Frontend
 
-- Aplicación web construida con TypeScript y framework moderno (React/Vue)
+- Aplicación web construida con TypeScript 
 - Motor de renderizado utilizando Canvas 2D para representación gráfica
 - Editor de código basado en Monaco Editor con soporte para TypeScript
 - Sistema de componentes para la interfaz de usuario del dashboard
@@ -90,76 +78,60 @@ El enfoque en TypeScript como lenguaje de implementación responde a su crecient
 
 ---
 
-## Aspectos Innovadores
+## Plan de trabajo — 5 semanas aproximadamente
 
-El valor diferenciador de Code Colony reside en su enfoque educativo específico para la enseñanza de POO. Mientras existen múltiples plataformas de aprendizaje de programación, pocas se centran específicamente en los principios de orientación a objetos dentro de un contexto de simulación continua.
+### Semana 1 — Fundamentos y arquitectura
+ > Objetivo: Tener la base sólida del proyecto lista para desarrollar. Tareas:
 
-La arquitectura del sistema está diseñada para reflejar patrones de diseño empresariales, proporcionando a los estudiantes exposición temprana a conceptos que encontrarán en entornos de desarrollo profesional.
+ - [ ] Configurar entorno de desarrollo con Node.js, TypeScript y Express.
+ - [ ] Configurar Docker para ejecución del proyecto.
+ - [ ] Diseñar la estructura de carpetas (backend, frontend, assets, etc.).
+ - [ ] Escribir documentación inicial
+ - [ ] Implementar un servidor Express que sirva una página base con un mensaje inicial.
 
-La integración nativa de TypeScript como lenguaje de scripting para entidades virtuales es otra innovación significativa, aprovechando las ventajas del tipado estático en un contexto tradicionalmente dominado por lenguajes dinámicos.
+ Entregable: Proyecto ejecutable en Docker y corriendo con un servidor Express básico.
 
----
+### Semana 2 — Lógica del juego y modelo de objetos (POO)
+ > Objetivo: Implementar el sistema base de entidades y comportamiento del juego. Tareas:
 
-## Metodología de Desarrollo
+ - [ ] Definir las clases principales: Unidad, Estructura, Recurso, Jugador.
+ - [ ] Implementar relaciones entre objetos.
+ - [ ] Crear un controlador del mundo (GameEngine) que gestione el estado global.
+ - [ ] Agregar simulación básica (tick del juego o ciclo de actualización).
+ - [ ] Permitir modificar o crear objetos mediante código del usuario (por consola o editor embebido).
+ 
+ Entregable: Motor lógico del juego ejecutándose desde Node, con entidades funcionales.
 
-El proyecto seguirá una metodología ágil adaptada, con iteraciones de dos semanas y reuniones de planificación y revisión regulares. Se utilizará Git para control de versiones con un modelo de branching basado en Git Flow.
+### Semana 3 — Interfaz web interactiva
+ > Objetivo: Crear la base visual del juego en el navegador. Tareas:
 
-El proceso de desarrollo incluirá:
+ - [ ] Crear frontend HTML + CSS + TypeScript
+ - [ ] Mostrar un canvas 2D con las entidades del mundo.
+ - [ ] Renderizar posiciones y estados de las unidades y estructuras.
+ - [ ] Sincronizar datos con el backend via REST y WebSocket básico.
+ - [ ] Mostrar una consola o panel para escribir código y controlar entidades.
+ 
+ Entregable: Mundo visual básico donde se ve movimiento o interacción simple.
 
-- Diseño técnico previo a la implementación de cada componente mayor
-- Revisiones de código entre pares para mantener calidad del código base
-- Pruebas automatizadas en múltiples niveles (unitarias, integración, end-to-end)
-- Documentación técnica continua junto con el desarrollo de características
-- Despliegues regulares a entorno de staging para validación
+### Semana 4 — Programación del usuario y simulación avanzada
+ > Objetivo: Hacer que el jugador pueda controlar objetos mediante código. Tareas:
 
----
+ - [ ] Implementar un intérprete o sandbox de scripts.
+ - [ ] Permitir que los usuarios escriban código para manejar sus unidades.
+ - [ ] Integrar estas acciones con el motor (GameEngine).
+ - [ ] Agregar validaciones y mensajes de error legibles.
+ - [ ] Añadir persistencia temporal (estado del mundo en memoria o JSON).
+ 
+ Entregable: Jugador puede escribir código para manipular entidades dentro del juego.
 
-## Resultados Esperados
+### Semana 5 — Pulido, visuales y despliegue
+ > Objetivo: Convertirlo en un producto completo y presentable. Tareas:
 
-Al concluir el desarrollo, se espera contar con:
+ - [ ] Mejorar la interfaz (colores, iconos, efectos visuales básicos).
+ - [ ] Añadir panel de control para reiniciar mundo o cargar scripts.
+ - [ ] Documentar API interna y estructura de clases.
+ - [ ] Integrar Docker Compose para correr backend y frontend juntos.
+ - [ ] Desplegar en Railway o AWS-EC2.
+ - [ ] Crear presentación final del proyecto.
 
-- Una plataforma web completamente funcional accesible mediante navegador
-- Documentación técnica para desarrolladores y guías de usuario para estudiantes
-- Conjunto de ejemplos y tutoriales que ilustren conceptos de POO
-- Arquitectura extensible que permita futuras expansiones
-- Código fuente organizado y documentado para posible continuación del proyecto
-
-La plataforma deberá soportar al menos 50 usuarios concurrentes en su versión inicial, con capacidad para simular colonias de hasta 100 entidades activas simultáneamente.
-
----
-
-## Stack Tecnológico
-
-### Desarrollo Frontend
-- TypeScript como lenguaje principal
-- React o Vue.js como framework de interfaz
-- Canvas API para renderizado gráfico
-- WebSockets para comunicación en tiempo real
-- CSS3 con variables custom para theming
-
-### Desarrollo Backend
-- Node.js con TypeScript
-- Express.js para servidor web
-- Socket.io para WebSockets
-- MongoDB para persistencia de datos
-- JEST para pruebas unitarias
-
-### Infraestructura
-- Docker para containerización
-- GitHub para control de versiones
-- CI/CD con GitHub Actions
-- Despliegue en plataforma cloud (AWS o similar)
-
----
-
-## Plan de Trabajo
-
-El desarrollo se estructurará en cinco fases principales:
-
-1. **Fase de Infraestructura**: Configuración inicial y arquitectura base
-2. **Fase de Motor**: Implementación del núcleo de simulación y sistema de entidades
-3. **Fase de Interfaz**: Desarrollo del frontend y componentes visuales
-4. **Fase de Integración**: Unificación de componentes y pruebas del sistema completo
-5. **Fase de Pulido**: Optimizaciones, documentación y preparación para despliegue
-
-Cada fase incluirá hitos específicos y criterios de aceptación para validar el progreso del proyecto.
+ Entregable: Versión funcional de CodeColony lista.
