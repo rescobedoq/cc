@@ -1,15 +1,11 @@
-import express from 'express'
+import { GameEngine } from './game/GameEngine';
 
-const app = express()
-app.use(express.json())
+const game = new GameEngine();
 
-const PORT = 3000
+// Arrancamos el motor
+game.start();
 
-app.get('/ping', (_req, res) => {
-    console.log('someone pinged here :3')
-    res.send('pong')
-})
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} | http://localhost:${PORT}/`)
-})
+//lo paramos a los 10 segundos
+setTimeout(() => {
+  game.stop();
+}, 10000);
