@@ -11,8 +11,7 @@ export class Monster extends Unit {
   }
 
   tick(gameState: any): void {
-    // IA SIMPLE:
-    // 1. Buscar objetivo (por ahora, asumimos que la base está en 0,0)
+    //Buscar objetivo (por ahora, asumimos que la base está en 0,0)
     const target = new Point(0, 0);
     const dist = this.position.distanceTo(target);
 

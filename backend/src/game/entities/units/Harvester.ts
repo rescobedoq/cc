@@ -36,13 +36,11 @@ export class Harvester extends Unit {
                 log: (msg: string) => console.log(`[Harvester ${this.id}]: ${msg}`)
             },
             world: {
-                // En una versión real, filtraríamos esto para no ver todo el mapa
+                // filtraremos esto para no ver todo el mapa (por el momento nou)
                 resources: gameState.entities.filter((e: any) => e.constructor.name === 'Resource')
             }
         };
 
-        // EJECUTAR (DANGER: Usamos new Function para prototipo)
-        // El usuario escribirá algo como: "me.move(100, 100);"
         const run = new Function('me', 'world', userScript);
         run(api.me, api.world);
 
