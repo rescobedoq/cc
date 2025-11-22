@@ -83,22 +83,22 @@ Crear una plataforma web de simulación que permita a los usuarios aplicar princ
 ### Semana 1 — Fundamentos y arquitectura
  > Objetivo: Tener la base sólida del proyecto lista para desarrollar. Tareas:
 
- - [ ] Configurar entorno de desarrollo con Node.js, TypeScript y Express.
- - [ ] Configurar Docker para ejecución del proyecto.
- - [ ] Diseñar la estructura de carpetas (backend, frontend, assets, etc.).
- - [ ] Escribir documentación inicial
- - [ ] Implementar un servidor Express que sirva una página base con un mensaje inicial.
+ - [p] Configurar entorno de desarrollo con Node.js, TypeScript y Express.
+ - [p] Configurar Docker para ejecución del proyecto.
+ - [p] Diseñar la estructura de carpetas (backend, frontend, assets, etc.).
+ - [p] Escribir documentación inicial
+ - [p] Implementar un servidor Express que sirva una página base con un mensaje inicial.
 
  Entregable: Proyecto ejecutable en Docker y corriendo con un servidor Express básico.
 
 ### Semana 2 — Lógica del juego y modelo de objetos (POO)
  > Objetivo: Implementar el sistema base de entidades y comportamiento del juego. Tareas:
 
- - [ ] Definir las clases principales: Unidad, Estructura, Recurso, Jugador.
- - [ ] Implementar relaciones entre objetos.
- - [ ] Crear un controlador del mundo (GameEngine) que gestione el estado global.
- - [ ] Agregar simulación básica (tick del juego o ciclo de actualización).
- - [ ] Permitir modificar o crear objetos mediante código del usuario (por consola o editor embebido).
+ - [p] Definir las clases principales como Unidad, Estructura, Recurso, Jugador.
+ - [p] Implementar relaciones entre objetos.
+ - [p] Crear un controlador del mundo (GameEngine) que gestione el estado global.
+ - [p] Agregar simulación básica (tick del juego o ciclo de actualización).
+ - [p] Permitir modificar o crear objetos mediante código del usuario (por consola o editor embebido).
  
  Entregable: Motor lógico del juego ejecutándose desde Node, con entidades funcionales.
 
