@@ -49,13 +49,13 @@ export class GameClient {
     state.entities.forEach(ent => {
       this.ctx.beginPath();
       if (ent.type === 'Harvester') {
-        this.ctx.fillStyle = 'orange';
+        this.ctx.fillStyle = 'green';
         this.ctx.arc(ent.x, ent.y, 8, 0, Math.PI * 2); // Círculo
       } else if (ent.type === 'Resource') {
         this.ctx.fillStyle = 'cyan';
         this.ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10); // Cuadrado
       } else {
-        this.ctx.fillStyle = 'grey';
+        this.ctx.fillStyle = 'red';
         this.ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10);
       }
       this.ctx.fill();

@@ -17,7 +17,7 @@ if (divElement instanceof HTMLDivElement) {
         <h3>Programar Harvester</h3>
         <p>API Disponible: <code>me.move(x, y)</code>, <code>me.log("hola")</code></p>
         <textarea id="codeArea">
-// Ejemplo: Moverse en círculos
+// Moverse en círculos
 const time = new Date().getTime() / 1000;
 const x = Math.cos(time) * 100;
 const y = Math.sin(time) * 100;

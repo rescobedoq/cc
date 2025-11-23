@@ -7,14 +7,13 @@ body {
 }
 
 #gameCanvas { 
-  background: #333; 
+  background: #161616; 
   border: 2px solid #555; 
 }
 
 #editor { 
   display: flex; 
-  flex-direction: 
-  column; 
+  flex-direction: column; 
   width: 400px; 
 }
 
@@ -28,7 +27,7 @@ textarea {
 
 button { 
   padding: 10px; 
-  background: #007bff; 
+  background: #41016b; 
   color: white; 
   border: none; 
   cursor: pointer; 
@@ -36,5 +35,6 @@ button {
 }
 
 button:hover { 
-  background: #0056b3; 
+  background: #976ff3; 
+  color: black;
 }
