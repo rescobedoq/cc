@@ -102,29 +102,23 @@ Crear una plataforma web de simulación que permita a los usuarios aplicar princ
  
  Entregable: Motor lógico del juego ejecutándose desde Node, con entidades funcionales.
 
-### Semana 3 — Interfaz web interactiva
- > Objetivo: Crear la base visual del juego en el navegador. Tareas:
+### Semana 3 — Interfaz web, programación de usuario y simulación avanzada
+ > Objetivo: Crear interfaz visual completa y permitir programación de entidades. Tareas:
 
  - [ ] Crear frontend HTML + CSS + TypeScript
  - [ ] Mostrar un canvas 2D con las entidades del mundo.
  - [ ] Renderizar posiciones y estados de las unidades y estructuras.
  - [ ] Sincronizar datos con el backend via REST y WebSocket básico.
  - [ ] Mostrar una consola o panel para escribir código y controlar entidades.
- 
- Entregable: Mundo visual básico donde se ve movimiento o interacción simple.
-
-### Semana 4 — Programación del usuario y simulación avanzada
- > Objetivo: Hacer que el jugador pueda controlar objetos mediante código. Tareas:
-
  - [ ] Implementar un intérprete o sandbox de scripts.
  - [ ] Permitir que los usuarios escriban código para manejar sus unidades.
  - [ ] Integrar estas acciones con el motor (GameEngine).
  - [ ] Agregar validaciones y mensajes de error legibles.
  - [ ] Añadir persistencia temporal (estado del mundo en memoria o JSON).
  
- Entregable: Jugador puede escribir código para manipular entidades dentro del juego.
+ Entregable: Mundo visual funcional donde el jugador puede escribir código para manipular entidades en tiempo real.
 
-### Semana 5 — Pulido, visuales y despliegue
+### Semana 4 — Pulido, visuales y despliegue
  > Objetivo: Convertirlo en un producto completo y presentable. Tareas:
 
  - [ ] Mejorar la interfaz (colores, iconos, efectos visuales básicos).
@@ -134,4 +128,4 @@ Crear una plataforma web de simulación que permita a los usuarios aplicar princ
  - [ ] Desplegar en Railway o AWS-EC2.
  - [ ] Crear presentación final del proyecto.
 
- Entregable: Versión funcional de CodeColony lista.
+ Entregable: Versión funcional completa de CodeColony lista para presentación.
