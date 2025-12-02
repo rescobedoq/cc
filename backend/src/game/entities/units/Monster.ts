@@ -2,6 +2,10 @@ import { Unit } from './Unit';
 import { Point } from '../../core/Point';
 import { Entity } from '../../core/Entity';
 
+import { GameEngine } from '../../GameEngine';
+
+import { GameState } from '../../../config/Game';
+
 export class Monster extends Unit {
   // Configuración de Amenaza
   public damage: number = 10;
@@ -17,7 +21,7 @@ export class Monster extends Unit {
     (this as any).type = 'Monster';
   }
 
-  tick(gameState: any): void {
+  tick(gameState: GameState): void {
     if (this.cooldown > 0) this.cooldown--;
 
     // 1. INTELIGENCIA ARTIFICIAL (IA)
@@ -57,7 +61,7 @@ export class Monster extends Unit {
     }
   }
 
-  private performAttack(target: Entity, engine: any) {
+  private performAttack(target: Entity, engine: GameEngine) {
     target.takeDamage(this.damage);
     this.cooldown = this.attackSpeed;
 

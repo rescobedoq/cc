@@ -13,7 +13,7 @@ export class GameActionController {
     }
 
     // 1. Buscar la Colonia del jugador
-    // (Nota: Esto es ineficiente con muchas entidades, pero válido para MVP)
+    // NOTE Esto es ineficiente con muchas entidades, pero válido para MVP
     let myColony: Colony | undefined;
     
     for (const entity of gameManager.engine.entities.values()) {
@@ -37,11 +37,8 @@ export class GameActionController {
     }
   }
 
-  // Acción: Reiniciar el juego (Debug)
   static resetGame(req: Request, res: Response) {
-      gameManager.engine.entities.clear();
-      // Reinicializar lógica básica...
-      // (Aquí deberías llamar a un método gameManager.engine.reset())
+      gameManager.engine.reset();
       return res.json({ message: "Mundo purgado." });
   }
 }

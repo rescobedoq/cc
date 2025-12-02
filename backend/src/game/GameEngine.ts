@@ -8,12 +8,17 @@ import { Tower } from './entities/structures/Tower';
 import { Harvester } from './entities/units/Harvester';
 import { Unit } from './entities/units/Unit';
 
+import { Event, GameState } from '../config/Game';
+import { TICK_RATE } from '../config/constants';
+
+import { gameManager } from '../server/services/GameManager';
+
 export class GameEngine {
   // Mapa de entidades vivas
   public entities: Map<string, Entity> = new Map(); 
   
   // Lista de eventos visuales (disparos, explosiones) del tick actual
-  public events: any[] = []; 
+  public events: Event[] = []; 
 
   // Almacén de scripts de usuarios: ownerId -> { 'Warrior': 'código...', 'Harvester': '...' }
   // Cambiamos a un objeto simple o Map según prefieras. Aquí uso un objeto anidado para facilitar acceso.
@@ -21,25 +26,31 @@ export class GameEngine {
 
   private tickCount: number = 0;
   private gameLoopInterval: NodeJS.Timeout | null = null;
-  private TICK_RATE_MS = 200; // 5 FPS
+
+  // Referencia rápida a la colonia del jugador principal (juego de un solo jugador)
+  private colony: Colony;
 
   constructor() {
+    this.colony = new Colony(new Point(0, 0), 'player1');
+    this.addEntity(this.colony);
+    
     this.initializeWorld();
   }
 
-  private initializeWorld() {
+  public getGameLoopInterval() {
+    return this.gameLoopInterval;
+  }
+
+  public initializeWorld() {
     console.log("Inicializando mundo...");
 
     // Recursos
     this.addEntity(new Resource(new Point(200, 200), 1000));
     this.addEntity(new Resource(new Point(-200, -200), 1000));
     
-    // Jugador 1
-    const p1Base = new Colony(new Point(-400, -300), 'player1');
-    this.addEntity(p1Base);
-    this.addEntity(new Tower(new Point(-350, -300), 'player1'));
-    this.addEntity(new Harvester(new Point(-380, -280), 'player1'));
-    this.addEntity(new Warrior(new Point(-380, -320), 'player1'));
+    // Jugador (desactivado para implementar aviso de game over)
+    //this.addEntity(new Tower(new Point(-80, 0), 'player1'));
+    //this.addEntity(new Tower(new Point(80, 0), 'player1'));
 
     // Enemigo inicial
     this.spawnMonster();
@@ -53,7 +64,7 @@ export class GameEngine {
    * MÉTODO NUEVO: Registrar un evento visual
    * Las entidades llamarán a esto: engine.addEvent(...)
    */
-  public addEvent(event: any) {
+  public addEvent(event: Event) {
     this.events.push(event);
   }
 
@@ -72,14 +83,14 @@ export class GameEngine {
     if (this.gameLoopInterval) return;
     console.log("Juego iniciado.");
     // Usamos bind para no perder el contexto de 'this'
-    this.gameLoopInterval = setInterval(() => this.updateWorld(), this.TICK_RATE_MS);
+    this.gameLoopInterval = setInterval(() => this.updateWorld(), TICK_RATE);
   }
 
   public stop() {
     if (this.gameLoopInterval) {
       clearInterval(this.gameLoopInterval);
       this.gameLoopInterval = null;
-      console.log("🛑 Juego detenido.");
+      console.log("Juego detenido.");
     }
   }
 
@@ -87,17 +98,20 @@ export class GameEngine {
     this.tickCount++;
     
     // 1. Limpiar eventos del tick anterior (ya se enviaron o se perdieron)
-    // Es vital limpiar esto, si no la lista crece infinitamente y explota la memoria.
     this.events = []; 
 
-    // 2. Lógica Global (Spawn de Monstruos cada 50 ticks para no saturar)
-    if (this.tickCount % 50 === 0) {
+    // 2. Lógica Global - Spawn de Monstruos y Recursos
+    if (this.tickCount % 100 === 0) {
       this.spawnMonster();
+    }
+
+    if (this.tickCount % 350 === 0) {
+      this.spawnResource();
     }
 
     // 3. Preparar el CONTEXTO para las entidades
     // Esto es lo que reciben en su método tick(gameState)
-    const gameStateContext = {
+    const gameStateContext: GameState = {
       engine: this,              // Pasamos el motor entero para que usen addEvent y getNearby
       entities: this.entities,   // Acceso directo (lectura)
       scripts: this.playerScripts // Acceso a los scripts
@@ -124,8 +138,34 @@ export class GameEngine {
       }
     });
 
+    if (this.colony && !this.colony.isAlive()) {
+      console.log("La colonia ha sido destruida. Fin del juego. x_x");
+      this.stop();
+    }
+
     // Log periódico
     this.logStatus();
+  }
+
+  public reset() {
+    console.log("Reseteando mundo...");
+      
+      // 1. Detener el juego
+    this.stop();
+      
+      // 2. Limpiar todo
+    this.entities.clear();
+    this.events = [];
+    this.playerScripts = {};
+    this.tickCount = 0;
+      
+      // 3. Reinicializar
+    this.colony = new Colony(new Point(0, 0), 'player1'); // ← Nueva referencia
+    this.addEntity(this.colony);
+    this.initializeWorld();
+      
+    // 4. Reiniciar el juego
+    this.start();
   }
 
   public getNearbyEntities(center: Point, radius: number, excludeId?: string): Entity[] {
@@ -172,6 +212,17 @@ export class GameEngine {
     const monster = new Monster(new Point(x, y));
     this.addEntity(monster);
     console.log(`⚠️ Monstruo en (${x.toFixed(0)}, ${y.toFixed(0)})`);
+  }
+
+  private spawnResource () {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 100 + Math.random() * 400;
+    const x = Math.cos(angle) * dist;
+    const y = Math.sin(angle) * dist;
+
+    const resource = new Resource(new Point(x, y), 1000);
+    this.addEntity(resource);
+    console.log(`Recurso en (${x.toFixed(0)}, ${y.toFixed(0)})`);
   }
 
   private logStatus() {

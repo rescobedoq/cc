@@ -28,4 +28,8 @@ export class SocketManager {
     // no intentes reenviarlo, envía el siguiente (mejor para juegos en tiempo real)
     this.io.volatile.emit('game_tick', state);
   }
+
+  public emitGameOver(reason: string) {
+    this.io.emit('game_over', { reason });
+  }
 }

@@ -2,9 +2,11 @@ import { Structure } from './Structure';
 import { Point } from '../../core/Point';
 import { GameEngine } from '../../GameEngine'; // Ajusta la ruta según tu estructura
 
+import { GameState } from '../../../config/Game';
+
 export class Colony extends Structure {
   // Propiedad única: El banco de energía del jugador
-  public energy: number = 50; // Empezamos con un poco para que puedan crear algo
+  public energy: number = 100; // Empezamos con un poco para que puedan crear algo
   public type: string;
 
   // Configuración de Costos (Balance del juego)
@@ -14,8 +16,8 @@ export class Colony extends Structure {
   };
 
   constructor(position: Point, ownerId: string) {
-    // Vida: 1000 (Es resistente), Radio: 30 (Ocupa espacio)
-    super(position, 1000, 30, ownerId);
+    // Vida: 1000 (Es resistente), Radio: 400 (Ocupa espacio)
+    super(position, 1000, 700, ownerId);
     this.type = 'Colony'; // Importante para el frontend
   }
 
@@ -23,7 +25,7 @@ export class Colony extends Structure {
    * Ciclo de vida de la Colonia
    * Por ahora es pasiva, pero aquí podríamos poner regeneración de escudo
    */
-  tick(gameState: any): void {
+  tick(gameState: GameState): void {
     // Regeneración pasiva muy lenta (opcional)
     if (this.health < 1000 && this.health > 0) {
       this.health += 0.05;

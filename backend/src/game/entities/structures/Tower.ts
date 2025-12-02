@@ -4,8 +4,8 @@ import { Entity } from '../../core/Entity';
 
 export class Tower extends Structure {
   // Configuración de combate
-  public damage: number = 15;      // Daño por disparo
-  public range: number = 150;      // Rango de visión/ataque
+  public damage: number = 5;      // Daño por disparo
+  public range: number = 100;      // Rango de visión/ataque
   public fireRate: number = 5;     // Dispara cada 5 ticks (aprox 1 segundo si tick=200ms)
   
   // Estado interno
@@ -13,7 +13,7 @@ export class Tower extends Structure {
 
   constructor(position: Point, ownerId: string) {
     // Vida: 300 (Resistente), Radio: 15, Owner: jugador
-    super(position, 300, 15, ownerId);
+    super(position, 300, 10, ownerId);
     (this as any).type = 'Tower';
   }
 

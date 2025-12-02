@@ -2,6 +2,10 @@ import { Unit } from './Unit';
 import { Point } from '../../core/Point';
 import { Entity } from '../../core/Entity';
 
+import { GameEngine } from '../../GameEngine';
+
+import { GameState } from '../../../config/Game';
+
 export class Warrior extends Unit {
   // Stats de Combate
   public damage: number = 15;
@@ -17,7 +21,7 @@ export class Warrior extends Unit {
   }
 
   // Acción interna de ataque
-  public fight(target: Entity, engine: any) {
+  public fight(target: Entity, engine: GameEngine) {
     if (this.cooldown > 0) return; // Recargando
     
     // Validar rango
@@ -42,7 +46,7 @@ export class Warrior extends Unit {
     }
   }
 
-  tick(gameState: any): void {
+  tick(gameState: GameState): void {
     if (this.cooldown > 0) this.cooldown--;
 
     const userScript = gameState.scripts?.[this.ownerId]?.['Warrior'];
@@ -103,7 +107,7 @@ export class Warrior extends Unit {
   }
 
   // IA Tonta por defecto (Atacar al enemigo más cercano si lo veo)
-  private defaultBehavior(gameState: any) {
+  private defaultBehavior(gameState: GameState) {
       const nearby = gameState.engine.getNearbyEntities(this.position, 100, this.id);
       const enemies = nearby.filter((e: Entity) => e.ownerId !== this.ownerId && e.ownerId !== 'neutral');
       

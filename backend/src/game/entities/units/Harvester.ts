@@ -4,6 +4,8 @@ import { Resource } from '../environment/Resource';
 import { Colony } from '../structures/Colony';
 import { Entity } from '../../core/Entity';
 
+import { GameState } from '../../../config/Game';
+
 export class Harvester extends Unit {
   // Capacidad de carga
   public capacity: number = 50;
@@ -61,7 +63,7 @@ export class Harvester extends Unit {
   }
 
   // Ejecutar código del usuario
-  tick(gameState: any): void {
+  tick(gameState: GameState): void {
     const userScript = gameState.scripts?.[this.ownerId]?.['Harvester'];
     if (!userScript) return;
 

@@ -1,4 +1,5 @@
 import { Server, Socket } from 'socket.io';
+import { gameManager } from '../../services/GameManager';
 
 export class ConnectionHandler {
   static onConnect(io: Server, socket: Socket) {

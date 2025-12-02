@@ -43,10 +43,13 @@ setInterval(() => {
     });
 
     // E. Importante: Limpiar eventos en el motor para no repetir animaciones
+    if (gameManager.engine.getGameLoopInterval() === null) {
+        socketManager.emitGameOver('game_over');
+    }
+
     gameManager.engine.events = [];
 
 }, TICK_RATE);
-
 
 // 6. Arrancar Servidor
 const PORT = process.env.PORT || 3000;
