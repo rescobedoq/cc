@@ -1,6 +1,8 @@
 import { Point } from './Point';
 import { v4 as uuidv4 } from 'uuid'; 
 
+import { GameState } from '../../config/Game';
+
 export abstract class Entity {
   public id: string;
   public isMarkedForDeletion: boolean = false;
@@ -15,7 +17,7 @@ export abstract class Entity {
   }
 
   // Método que se ejecutará en cada ciclo del juego
-  abstract tick(gameState: any): void; 
+  abstract tick(gameState: GameState): void; 
 
   public takeDamage(amount: number): void {
     this.health -= amount;
