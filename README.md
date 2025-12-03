@@ -1,20 +1,15 @@
+# CodeColony
 
+## Descripción
 
-# CC
+**CodeColony** es una aplicación web interactiva para aprender y practicar **Programación Orientada a Objetos (POO)** usando **TypeScript**.  
 
-**Desarrollo de una Aplicación Web Interactiva Basada en Programación Orientada a Objetos para la Simulación de Colonias Inteligentes**
+Los jugadores crean y gestionan una colonia virtual cuyos elementos —unidades, estructuras, recursos, etc.— se controlan mediante código. Cada entidad del juego será un **objeto programable** con sus propias relaciones, herencias y comportamientos.  
 
----
-
-## Descripción General
-
-**CodeColony** es una aplicación web interactiva inspirada en el concepto del juego *Screeps*, diseñada para enseñar y aplicar de forma avanzada los principios de la **Programación Orientada a Objetos (POO)** utilizando **TypeScript**.
-
-El usuario puede crear y gestionar una **colonia virtual** cuyos elementos —unidades, estructuras, recursos, etc.— se controlan mediante código. Cada elemento del juego es un objeto programable con **relaciones, herencias y comportamientos definidos**.
-
-El objetivo principal es ofrecer una experiencia **educativa y lúdica**, donde los jugadores apliquen conceptos de ingeniería de software en un entorno visual, interactivo y modular.
+El objetivo es ofrecer una experiencia **educativa y lúdica**, aplicando conceptos de programación en un entorno visual e interactivo.
 
 ---
+
 ## Equipo
 
 - Basurco Casani, Jeferson Joao  
@@ -25,110 +20,89 @@ El objetivo principal es ofrecer una experiencia **educativa y lúdica**, donde 
 
 ---
 
-## Objetivos
+## Tecnologías
 
-### Objetivo General
-
-Diseñar y desarrollar una aplicación web tipo simulador que permita a los usuarios programar el comportamiento de entidades dentro de un entorno virtual, aplicando conceptos avanzados de **POO en TypeScript**.
-
-### Objetivos Específicos
-
-* Implementar una arquitectura modular que refleje los principios de **herencia, polimorfismo, encapsulación y abstracción**.
-* Simular **procesos concurrentes y tareas paralelas** utilizando *Web Workers* o un sistema interno de colas.
-* Desarrollar una **interfaz visual propia** (basada en SVG o Canvas) para representar las colonias y sus unidades.
-* Diseñar una **API interna** que comunique la lógica del juego (backend) con los scripts de los jugadores.
-* Asegurar una base **escalable y extensible** para futuras expansiones o integración de IA.
+- **Lenguajes:** TypeScript, HTML, CSS  
+- **Backend:** Node.js, Express  
+- **Contenedores:** Docker  
+- **Control de versiones:** Git y GitHub  
 
 ---
 
-## Justificación
+## Estructura del proyecto
 
-**CodeColony** busca convertirse en una herramienta de aprendizaje experimental para la POO y la programación concurrente.
-A diferencia de *Screeps*, se enfoca más en la **experimentación con patrones de diseño, estructuras de datos y técnicas avanzadas de programación**, en lugar de la competencia entre jugadores.
+CodeColony/
+├─ backend/ # Servidor y lógica del juego
+├─ frontend/ # Interfaz web
+├─ assets/ # Imágenes y recursos gráficos
+├─ scripts/ # Scripts de inicialización y utilidades
+├─ docker/ # Configuraciones Docker y Compose
+└─ README.md # Documentación
 
-Todo el contenido —código, recursos gráficos y motor de simulación— será **original y libre de dependencias externas con derechos de autor**, lo que permite su uso académico o su posible registro como software educativo.
-
----
-
-## Alcance
-
-* Simulación de colonias con recursos, edificios y unidades programables.
-* Motor de ejecución que interpreta **scripts seguros en TypeScript**.
-* Interfaz visual minimalista en **SVG o Canvas**.
-* Gestión del entorno y eventos (ataques, recolección, expansión, etc.).
-* Persistencia de datos con **MongoDB** o **PostgreSQL**.
-* Soporte de **multitarea simulada** mediante *Web Workers* o un sistema de tareas asíncronas.
 
 ---
 
-## Estructura Técnica
+## Plan de trabajo
 
-### Frontend
+### Semana 1 — Fundamentos y arquitectura
+**Objetivo:** Base sólida del proyecto  
+**Tareas:**
+- Configurar entorno (Node.js, TypeScript, Express)  
+- Configurar Docker  
+- Diseñar estructura de carpetas  
+- Documentación inicial  
+- Servidor Express básico  
 
-* **Lenguaje:** TypeScript
-* **Framework:** React o Vue.js
-* **Gráficos:** SVG nativo, Canvas o PixiJS
-* **Funcionalidades principales:**
-
-  * Panel de control de la colonia
-  * Consola de programación (editor con resaltado de sintaxis)
-  * Mapa interactivo
-  * Panel de eventos y notificaciones
-
-### Backend
-
-* **Entorno:** Node.js + TypeScript
-* **Arquitectura:** API REST con lógica de simulación y control de entidades
-* **Base de datos:** MongoDB o PostgreSQL
-* **Características:**
-
-  * Validación y ejecución segura del código del usuario
-  * Gestión del estado del juego
-  * Comunicación en tiempo real mediante WebSockets
+**Entregable:** Proyecto ejecutable en Docker con servidor básico
 
 ---
 
-## Innovación y Originalidad
+### Semana 2 — Lógica del juego y modelo de objetos (POO)
+**Objetivo:** Sistema base de entidades y comportamiento  
+**Tareas:**
+- Definir clases: `Unidad`, `Estructura`, `Recurso`, `Jugador`  
+- Implementar relaciones entre objetos  
+- Crear `GameEngine`  
+- Simulación básica (tick del juego)  
+- Crear/editar objetos mediante código del usuario  
 
-**CodeColony** no replica ningún elemento de *Screeps*, sino que se **inspira en su concepto educativo** para crear un entorno completamente nuevo.
-
-La innovación radica en:
-
-* Un **motor de simulación orientado a objetos**, donde cada entidad implementa clases y patrones de diseño reales.
-* Simulación de **procesos concurrentes** utilizando solo tecnologías web.
-* Un **entorno visual propio y personalizable**, diseñado desde cero.
-
----
-
-## Metodología de Desarrollo
-
-* **Metodología:** Ágil (Scrum / Kanban)
-* **Control de versiones:** Git / GitHub
-* **Testing:** Jest y pruebas de integración
-* **Documentación:** TypeDoc + diagramas UML
+**Entregable:** Motor lógico funcional desde Node
 
 ---
 
-## Resultados Esperados
+### Semana 3 — Interfaz web interactiva
+**Objetivo:** Base visual en el navegador  
+**Tareas:**
+- Frontend con HTML, CSS, TypeScript  
+- Canvas 2D para renderizar entidades  
+- Sincronización con backend via REST y WebSocket  
+- Consola/panel para código de usuario  
 
-* Aplicación web funcional, responsive y educativa.
-* Entorno visual atractivo y de fácil uso.
-* Sistema extensible para futuras expansiones o integración con IA.
-* Documentación técnica detallada de diseño, patrones y componentes.
-
----
-
-## Tecnologías Clave
-
-| Categoría            | Tecnologías                           |
-| -------------------- | ------------------------------------- |
-| Lenguaje             | TypeScript                            |
-| Frontend             | React / Vue.js, SVG / Canvas / PixiJS |
-| Backend              | Node.js, Express                      |
-| Base de Datos        | MongoDB / PostgreSQL                  |
-| Comunicación         | WebSockets                            |
-| Testing              | Jest                                  |
-| Control de versiones | Git / GitHub                          |
+**Entregable:** Mundo visual básico con interacción
 
 ---
 
+### Semana 4 — Programación del usuario y simulación avanzada
+**Objetivo:** Control de objetos mediante código  
+**Tareas:**
+- Intérprete/sandbox de scripts  
+- Permitir control de unidades mediante código  
+- Integrar acciones con `GameEngine`  
+- Validaciones y errores amigables  
+- Persistencia temporal (memoria o JSON)  
+
+**Entregable:** Usuario puede manipular entidades escribiendo código
+
+---
+
+### Semana 5 — Pulido visual y despliegue
+**Objetivo:** Versión completa y presentable  
+**Tareas:**
+- Mejorar interfaz (colores, iconos, efectos)  
+- Panel de control para reiniciar mundo o cargar scripts  
+- Documentar API y estructura de clases  
+- Integrar Docker Compose  
+- Desplegar en Railway o AWS-EC2  
+- Preparar presentación final  
+
+**Entregable:** Versión funcional lista para mostrar

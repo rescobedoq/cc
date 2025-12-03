@@ -1,0 +1,40 @@
+body { 
+  display: flex; 
+  gap: 20px; 
+  font-family: monospace; 
+  background: #222; 
+  color: #eee; 
+}
+
+#gameCanvas { 
+  background: #161616; 
+  border: 2px solid #555; 
+}
+
+#editor { 
+  display: flex; 
+  flex-direction: column; 
+  width: 400px; 
+}
+
+textarea { 
+  height: 300px; 
+  background: #111; 
+  color: #0f0; 
+  border: 1px solid #444; 
+  padding: 10px; 
+}
+
+button { 
+  padding: 10px; 
+  background: #41016b; 
+  color: white; 
+  border: none; 
+  cursor: pointer; 
+  margin-top: 10px; 
+}
+
+button:hover { 
+  background: #976ff3; 
+  color: black;
+}

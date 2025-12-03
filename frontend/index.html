@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Code Colony - Programa tu Colonia</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Loading Screen -->
+      <div id="loading">
+        <h1>🎮 Code Colony</h1>
+        <p>Cargando...</p>
+      </div>
+
+      <!-- Main Game UI -->
+      <div id="game-container" style="display: none;">
+        
+        <!-- Left Panel: Game World -->
+        <div id="canvas-panel">
+          <div class="panel-header">
+            <h3>🗺️ Mundo del Juego</h3>
+            <div id="camera-info">(0, 0) | Zoom: 1.0x</div>
+          </div>
+          <div id="canvas-container">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+          </div>
+          <div class="canvas-controls">
+            <button id="resetCameraBtn">🎯 Centrar Cámara</button>
+            <button id="zoomInBtn">🔍 Zoom +</button>
+            <button id="zoomOutBtn">🔎 Zoom -</button>
+          </div>
+        </div>
+
+        <!-- Right Panel: Controls -->
+        <div id="control-panel">
+          
+          <!-- Status Card -->
+          <div class="card status-card">
+            <h3>🔌 Estado</h3>
+            <div class="status-row">
+              <span id="statusDot" class="status-dot"></span>
+              <span id="statusText">Desconectado</span>
+            </div>
+            <div class="stat-row">
+              <span>Ping:</span>
+              <span id="pingText">--</span>
+            </div>
+            <div class="stat-row">
+              <span>Tick:</span>
+              <span id="tickText">--</span>
+            </div>
+            <div class="stat-row">
+              <span>Entidades:</span>
+              <span id="entityCount">0</span>
+            </div>
+            <div class="stat-row energy-stat">
+              <span>⚡ Energía:</span>
+              <span id="energyText">100</span>
+            </div>
+          </div>
+
+          <!-- Code Editor - Harvester -->
+          <div class="card editor-card">
+            <div class="editor-header">
+              <h3>💻 Harvester</h3>
+              <span class="cost-tag">Costo: 30⚡</span>
+            </div>
+            <div class="editor-help">
+              <details>
+                <summary>📖 API Disponible</summary>
+                <pre>me.move(x, y)
+me.gather(resourceId)
+me.transfer(colonyId)
+me.log("mensaje")
+
+world.scan(radius)
+// Devuelve: [{ id, type, x, y, owner, amount, dist }]</pre>
+              </details>
+            </div>
+            <textarea id="harvesterCode" class="code-editor" spellcheck="false">
+// Script del Harvester
+const resources = world.scan(300).filter(e => e.type === 'Resource');
+const colonies = world.scan(500).filter(e => e.type === 'Colony' && e.owner === 'player1');
+
+if (me.load < me.capacity && resources.length > 0) {
+  // Recolectar
+  const nearest = resources.sort((a, b) => a.dist - b.dist)[0];
+  me.gather(nearest.id);
+  me.log("Recolectando de " + nearest.id.substring(0, 8));
+} else if (me.load > 0 && colonies.length > 0) {
+  // Depositar
+  me.transfer(colonies[0].id);
+  me.log("Depositando: " + me.load);
+}
+            </textarea>
+            <button class="deploy-btn" data-unit="Harvester">🚀 Subir Código</button>
+          </div>
+
+          <!-- Code Editor - Warrior -->
+          <div class="card editor-card">
+            <div class="editor-header">
+              <h3>⚔️ Warrior</h3>
+              <span class="cost-tag">Costo: 50⚡</span>
+            </div>
+            <div class="editor-help">
+              <details>
+                <summary>📖 API Disponible</summary>
+                <pre>me.move(x, y)
+me.attack(enemyId)
+me.log("mensaje")
+
+world.scan(radius)
+// Devuelve: [{ id, type, x, y, hp, owner, dist }]</pre>
+              </details>
+            </div>
+            <textarea id="warriorCode" class="code-editor" spellcheck="false">
+// Script del Warrior
+const enemies = world.scan(150).filter(e => 
+  e.owner === 'enemy' && e.type === 'Monster'
+);
+
+if (enemies.length > 0) {
+  const nearest = enemies.sort((a, b) => a.dist - b.dist)[0];
+  
+  if (me.isReady && nearest.dist <= me.range) {
+    me.attack(nearest.id);
+    me.log("Atacando!");
+  } else {
+    me.move(nearest.x, nearest.y);
+  }
+} else {
+  // Patrullar alrededor de la base
+  const angle = Date.now() / 1000;
+  me.move(Math.cos(angle) * 80, Math.sin(angle) * 80);
+}
+            </textarea>
+            <button class="deploy-btn" data-unit="Warrior">🚀 Subir Código</button>
+          </div>
+
+          <!-- Actions Card -->
+          <div class="card actions-card">
+            <h3>🎮 Acciones</h3>
+            <button class="action-btn spawn-btn" data-unit="Harvester">
+              🚜 Crear Harvester (30⚡)
+            </button>
+            <button class="action-btn spawn-btn" data-unit="Warrior">
+              ⚔️ Crear Warrior (50⚡)
+            </button>
+            <hr>
+            <button class="action-btn danger-btn" id="resetBtn">
+              💀 Reiniciar Mundo
+            </button>
+          </div>
+
+          <!-- Logs Card -->
+          <div class="card logs-card">
+            <h3>📜 Logs</h3>
+            <div id="logArea"></div>
+            <button id="clearLogsBtn" class="clear-btn">🗑️ Limpiar</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Game Over Modal -->
+      <div id="gameOverModal" class="modal">
+        <div class="modal-content game-over">
+          <div class="game-over-title">GAME OVER</div>
+          <div class="game-over-subtitle" id="gameOverReason">
+            Tu colonia ha sido destruida
+          </div>
+          <div class="game-over-stats" id="gameOverStats">
+            <div class="stat">Ticks Sobrevividos: <span id="finalTicks">0</span></div>
+            <div class="stat">Energía Máxima: <span id="maxEnergy">0</span></div>
+          </div>
+          <div class="modal-buttons">
+            <button class="modal-btn primary" id="restartBtn">
+              🔄 Reiniciar Juego
+            </button>
+            <button class="modal-btn" id="closeModalBtn">
+              📊 Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
