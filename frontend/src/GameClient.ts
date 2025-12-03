@@ -1,89 +1,229 @@
+// GameClient.ts - Cliente principal del juego
+
 import { io, Socket } from 'socket.io-client';
-
-interface GameEntity {
-  type: string;
-  x: number;
-  y: number;
-  id?: string;
-}
-
-interface GameState {
-  entities: GameEntity[];
-}
+import type { GameTickData } from './types';  // ← Solo GameTickData
+import { CanvasRenderer } from './CanvasRenderer';
+import { UIManager } from './UIManager';
 
 export class GameClient {
   private socket: Socket;
-  private ctx: CanvasRenderingContext2D;
+  private renderer: CanvasRenderer;
+  private ui: UIManager;
+  private readonly API_URL = 'http://localhost:3000';
+  private readonly PLAYER_ID = 'player1';
 
-  constructor(canvasId: string) {
-    // 1. CONEXIÓN SOCKET
-    this.socket = io('http://localhost:3000');
-    
-    const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-    this.ctx = canvas.getContext('2d')!;
-    
-    // Centrar coordenadas (0,0 en el centro del canvas)
-    this.ctx.translate(250, 250);
-    
+  // Estado actual
+  private currentTick = 0;
+  private currentEnergy = 100;
+
+  constructor() {
+    this.renderer = new CanvasRenderer('gameCanvas');
+    this.ui = new UIManager();
+
+    // Conectar Socket
+    this.socket = io(this.API_URL);
     this.setupSocketEvents();
+    this.setupUIEvents();
+
+    // Ping loop
+    this.startPingLoop();
   }
 
   private setupSocketEvents(): void {
     this.socket.on('connect', () => {
-      const statusElement = document.getElementById('status');
-      if (statusElement) {
-        statusElement.innerText = "Conectado al Servidor";
-      }
-    });
-
-    // 2. DIBUJAR EL MUNDO
-    this.socket.on('gameState', (state: GameState) => {
-      this.renderGameState(state);
-    });
-  }
-
-  private renderGameState(state: GameState): void {
-    // Limpiar (recordar que el 0,0 está en el centro ahora)
-    this.ctx.clearRect(-250, -250, 500, 500);
-
-    state.entities.forEach(ent => {
-      this.ctx.beginPath();
-      if (ent.type === 'Harvester') {
-        this.ctx.fillStyle = 'green';
-        this.ctx.arc(ent.x, ent.y, 8, 0, Math.PI * 2); // Círculo
-      } else if (ent.type === 'Resource') {
-        this.ctx.fillStyle = 'cyan';
-        this.ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10); // Cuadrado
-      } else {
-        this.ctx.fillStyle = 'red';
-        this.ctx.fillRect(ent.x - 5, ent.y - 5, 10, 10);
-      }
-      this.ctx.fill();
+      this.ui.updateStatus(true);
+      this.ui.log('Conectado al servidor ✅', 'success');
+      this.ui.showLoading(false);
       
-      // ID Label
-      this.ctx.fillStyle = 'white';
-      this.ctx.font = '10px Arial';
-      this.ctx.fillText(ent.type, ent.x + 10, ent.y);
+      // Identificarse
+      this.socket.emit('join_game', { username: 'Player' });
+    });
+
+    this.socket.on('disconnect', () => {
+      this.ui.updateStatus(false);
+      this.ui.log('Desconectado del servidor ❌', 'error');
+    });
+
+    // EVENTO PRINCIPAL: Recibir estado del juego
+    this.socket.on('game_tick', (data: GameTickData) => {
+      this.handleGameTick(data);
+    });
+
+    // Game Over
+    this.socket.on('game_over', (data: { reason: string }) => {
+      this.ui.showGameOver(data.reason || 'Game Over', this.currentTick);
     });
   }
 
-  // 3. ENVIAR CÓDIGO (POST)
-  public async deployCode(code: string): Promise<void> {
+  private handleGameTick(data: GameTickData): void {
+    this.currentTick = data.t;
+
+    // Calcular energía actual (buscar Colony del jugador)
+    const colony = data.e.find(e => 
+      e.type === 'Colony' && e.owner === this.PLAYER_ID
+    ) as any;
+    
+    if (colony && colony.energy !== undefined) {
+      this.currentEnergy = colony.energy;
+    }
+
+    // Actualizar UI
+    this.ui.updateStats(this.currentTick, data.e.length, this.currentEnergy);
+
+    // Renderizar
+    this.renderer.render(data.e, data.ev || []);
+  }
+
+  private setupUIEvents(): void {
+    // Botones de deploy de código
+    document.querySelectorAll('.deploy-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const unitType = (e.target as HTMLElement).getAttribute('data-unit');
+        if (unitType) {
+          this.deployCode(unitType);
+        }
+      });
+    });
+
+    // Botones de spawn
+    document.querySelectorAll('.spawn-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const unitType = (e.target as HTMLElement).getAttribute('data-unit');
+        if (unitType) {
+          this.spawnUnit(unitType);
+        }
+      });
+    });
+
+    // Botón reset
+    const resetBtn = document.getElementById('resetBtn');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => this.resetGame());
+    }
+
+    // Botón restart (en modal)
+    const restartBtn = document.getElementById('restartBtn');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        this.ui.hideGameOver();
+        this.resetGame();
+      });
+    }
+
+    // Controles de cámara
+    const resetCameraBtn = document.getElementById('resetCameraBtn');
+    if (resetCameraBtn) {
+      resetCameraBtn.addEventListener('click', () => {
+        this.renderer.resetCamera();
+        this.ui.log('Cámara centrada', 'info');
+      });
+    }
+
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', () => this.renderer.zoomIn());
+    }
+
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', () => this.renderer.zoomOut());
+    }
+  }
+
+  private async deployCode(unitType: string): Promise<void> {
+    const textareaId = unitType === 'Harvester' ? 'harvesterCode' : 'warriorCode';
+    const textarea = document.getElementById(textareaId) as HTMLTextAreaElement;
+    
+    if (!textarea) return;
+
+    const code = textarea.value;
+    this.ui.log(`Subiendo código para ${unitType}...`, 'info');
+
     try {
-      await fetch('http://localhost:3000/api/upload-script', {
+      const response = await fetch(`${this.API_URL}/api/script/upload`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          unitType: 'Harvester', 
-          code: code 
+        body: JSON.stringify({
+          playerId: this.PLAYER_ID,
+          unitType: unitType,
+          code: code
         })
       });
-      
-      alert("Código Subido! Mira el canvas.");
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        this.ui.log(`✅ ${data.message}`, 'success');
+      } else {
+        this.ui.log(`⚠️ Error: ${data.error || 'Error desconocido'}`, 'error');
+      }
     } catch (error) {
-      console.error('Error deploying code:', error);
-      alert("Error al subir el código");
+      this.ui.log(`❌ Error de red: ${error}`, 'error');
     }
+  }
+
+  private async spawnUnit(unitType: string): Promise<void> {
+    const cost = unitType === 'Warrior' ? 50 : 30;
+
+    if (this.currentEnergy < cost) {
+      this.ui.log(`⚠️ Energía insuficiente. Tienes ${this.currentEnergy}, necesitas ${cost}`, 'warning');
+      return;
+    }
+
+    this.ui.log(`Creando ${unitType}...`, 'info');
+
+    try {
+      const response = await fetch(`${this.API_URL}/api/game/spawn`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          playerId: this.PLAYER_ID,
+          unitType: unitType
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        this.ui.log(`✅ ${unitType} creado!`, 'success');
+      } else {
+        this.ui.log(`⚠️ ${data.error || 'Error al crear unidad'}`, 'error');
+      }
+    } catch (error) {
+      this.ui.log(`❌ Error de red: ${error}`, 'error');
+    }
+  }
+
+  private async resetGame(): Promise<void> {
+    if (!confirm('¿Seguro que quieres reiniciar el mundo? Se perderá todo el progreso.')) {
+      return;
+    }
+
+    this.ui.log('Reiniciando mundo...', 'info');
+
+    try {
+      const response = await fetch(`${this.API_URL}/api/game/reset`, {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        this.ui.log('♻️ Mundo reiniciado', 'success');
+        this.ui.clearLogs();
+      }
+    } catch (error) {
+      this.ui.log(`❌ Error al reiniciar: ${error}`, 'error');
+    }
+  }
+
+  private startPingLoop(): void {
+    setInterval(() => {
+      const start = Date.now();
+      this.socket.emit('ping');
+      this.socket.once('pong', () => {
+        const latency = Date.now() - start;
+        this.ui.updatePing(latency);
+      });
+    }, 2000);
   }
 
   public disconnect(): void {
