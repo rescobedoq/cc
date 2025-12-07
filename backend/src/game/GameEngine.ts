@@ -12,6 +12,7 @@ import { Event, GameState } from '../config/Game';
 import { TICK_RATE } from '../config/constants';
 
 import { gameManager } from '../server/services/GameManager';
+import { Structure } from './entities/structures/Structure';
 
 export class GameEngine {
   // Mapa de entidades vivas
@@ -26,6 +27,8 @@ export class GameEngine {
 
   private tickCount: number = 0;
   private gameLoopInterval: NodeJS.Timeout | null = null;
+  private dificultyLevel: number = 100; 
+  private monstersPerWave: number = 2; 
 
   // Referencia rápida a la colonia del jugador principal (juego de un solo jugador)
   private colony: Colony;
@@ -96,13 +99,16 @@ export class GameEngine {
 
   public updateWorld() {
     this.tickCount++;
+    this.dificultyLevel -= 0.001
     
     // 1. Limpiar eventos del tick anterior (ya se enviaron o se perdieron)
     this.events = []; 
 
+    this.updateDifficulty();
+
     // 2. Lógica Global - Spawn de Monstruos y Recursos
-    if (this.tickCount % 100 === 0) {
-      this.spawnMonster();
+    if (this.tickCount % Math.floor(this.dificultyLevel) === 0) {
+      this.spawnMonsterWave();
     }
 
     if (this.tickCount % 350 === 0) {
@@ -147,6 +153,59 @@ export class GameEngine {
     this.logStatus();
   }
 
+  private updateDifficulty() {
+    const timeInSeconds = this.tickCount / 60; // Asumiendo 60 ticks/segundo
+
+    // Cada 30 segundos, reducir el intervalo (spawn más frecuente)
+    if (this.tickCount % (30 * 60) === 0 && this.dificultyLevel > 100) {
+      this.dificultyLevel -= 20;
+      console.log(`⚠️ Dificultad aumentada! Spawn cada ${Math.floor(this.dificultyLevel)} ticks`);
+    }
+
+    // Cada 45 segundos, aumentar cantidad de monstruos por oleada
+    if (this.tickCount % (45 * 60) === 0 && this.monstersPerWave < 5) {
+      this.monstersPerWave++;
+      console.log(`⚠️ Oleada aumentada! ${this.monstersPerWave} monstruos por spawn`);
+    }
+
+    // Opcional: Dificultad continua (más suave)
+    if (this.dificultyLevel > 100) {
+      this.dificultyLevel -= 0.01; // Reducción gradual
+    }
+  }
+
+  private spawnMonsterWave() {
+    for (let i = 0; i < this.monstersPerWave; i++) {
+      // Posiciones aleatorias en los bordes del mapa
+      const side = Math.floor(Math.random() * 4);
+      let x = 0, y = 0;
+
+      switch(side) {
+        case 0: // Arriba
+          x = (Math.random() - 0.5) * 400;
+          y = -300;
+          break;
+        case 1: // Derecha
+          x = 300;
+          y = (Math.random() - 0.5) * 400;
+          break;
+        case 2: // Abajo
+          x = (Math.random() - 0.5) * 400;
+          y = 300;
+          break;
+        case 3: // Izquierda
+          x = -300;
+          y = (Math.random() - 0.5) * 400;
+          break;
+        }
+
+      const monster = new Monster(new Point(x, y));
+      this.addEntity(monster);
+      
+      console.log(`👹 Monstruo spawneado en (${x.toFixed(0)}, ${y.toFixed(0)})`);
+    }
+  }
+
   public reset() {
     console.log("Reseteando mundo...");
       
@@ -158,6 +217,9 @@ export class GameEngine {
     this.events = [];
     this.playerScripts = {};
     this.tickCount = 0;
+
+    this.dificultyLevel = 100;
+    this.monstersPerWave = 2;
       
       // 3. Reinicializar
     this.colony = new Colony(new Point(0, 0), 'player1'); // ← Nueva referencia
@@ -186,11 +248,12 @@ export class GameEngine {
     const startY = y !== undefined ? y : (Math.random() * 100);
     const pos = new Point(startX, startY);
 
-    let unit: Unit;
+    let unit: Unit | Structure;
 
     switch (type) {
       case 'Warrior': unit = new Warrior(pos, ownerId); break;
       case 'Harvester': unit = new Harvester(pos, ownerId); break;
+      case 'Tower': unit = new Tower(pos, ownerId); break;
       default: console.error("Tipo desconocido:", type); return;
     }
 
@@ -202,16 +265,15 @@ export class GameEngine {
     this.addEntity(unit);
   }
 
-  private spawnMonster() {
-    // Generar lejos del centro para dar tiempo
+  public spawnMonster() {
     const angle = Math.random() * Math.PI * 2;
-    const dist = 300 + Math.random() * 200; // Entre 300 y 500 de distancia
-    const x = Math.cos(angle) * dist;
-    const y = Math.sin(angle) * dist;
+    const distance = 300;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
     
     const monster = new Monster(new Point(x, y));
     this.addEntity(monster);
-    console.log(`⚠️ Monstruo en (${x.toFixed(0)}, ${y.toFixed(0)})`);
+    console.log(`👹 Monstruo spawneado en (${x.toFixed(0)}, ${y.toFixed(0)})`);
   }
 
   private spawnResource () {

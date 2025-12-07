@@ -163,7 +163,21 @@ export class GameClient {
   }
 
   private async spawnUnit(unitType: string): Promise<void> {
-    const cost = unitType === 'Warrior' ? 50 : 30;
+    let cost: number
+    switch (unitType) {
+      case 'Warrior':
+        cost = 50;
+        break;
+      case 'Harvester':
+        cost = 30;
+        break;
+      case 'Tower':
+        cost = 100;
+        break;
+      default:
+        this.ui.log(`⚠️ Tipo de unidad desconocido: ${unitType}`, 'warning');
+        return;
+    }
 
     if (this.currentEnergy < cost) {
       this.ui.log(`⚠️ Energía insuficiente. Tienes ${this.currentEnergy}, necesitas ${cost}`, 'warning');

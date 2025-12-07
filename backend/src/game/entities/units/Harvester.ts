@@ -12,7 +12,7 @@ export class Harvester extends Unit {
   public currentLoad: number = 0;
   
   // Velocidad de minado (cuánto extrae por tick)
-  private harvestRate: number = 5;
+  private harvestRate: number = 3;
   
   // Rango de interacción (debe estar cerca para trabajar)
   private interactRange: number = 20;

@@ -12,7 +12,8 @@ export class Colony extends Structure {
   // Configuración de Costos (Balance del juego)
   private static UNIT_COSTS: Record<string, number> = {
     'Warrior': 50,
-    'Harvester': 30
+    'Harvester': 30,
+    'Tower': 100
   };
 
   constructor(position: Point, ownerId: string) {
