@@ -18,7 +18,7 @@ export class Colony extends Structure {
 
   constructor(position: Point, ownerId: string) {
     // Vida: 1000 (Es resistente), Radio: 400 (Ocupa espacio)
-    super(position, 1000, 700, ownerId);
+    super(position, 1000, 35, ownerId);
     this.type = 'Colony'; // Importante para el frontend
   }
 
