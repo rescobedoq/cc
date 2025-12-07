@@ -9,7 +9,7 @@ import { GameState } from '../../../config/Game';
 export class Warrior extends Unit {
   // Stats de Combate
   public damage: number = 15;
-  public attackRange: number = 30; // Un poco más que el monstruo
+  public attackRange: number = 70; // Un poco más que el monstruo
   public attackSpeed: number = 8;  // Ataca un poco más rápido
   
   private cooldown: number = 0;

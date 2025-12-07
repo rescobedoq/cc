@@ -9,7 +9,7 @@ import { GameState } from '../../../config/Game';
 export class Monster extends Unit {
   // Configuración de Amenaza
   public damage: number = 10;
-  public attackRange: number = 20; // Cuerpo a cuerpo
+  public attackRange: number = 60; // Cuerpo a cuerpo
   public aggroRange: number = 300; // Distancia a la que "huele" al enemigo
   public attackSpeed: number = 10; // Ticks entre ataques
   
