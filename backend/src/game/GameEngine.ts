@@ -13,7 +13,8 @@ import { TICK_RATE } from '../config/constants';
 
 import { gameManager } from '../server/services/GameManager';
 import { Structure } from './entities/structures/Structure';
-
+import * as fs from 'fs';
+import * as path from 'path';
 export class GameEngine {
   // Mapa de entidades vivas
   public entities: Map<string, Entity> = new Map(); 
@@ -37,6 +38,7 @@ export class GameEngine {
     this.colony = new Colony(new Point(0, 0), 'player1');
     this.addEntity(this.colony);
     
+    this.loadScripts();
     this.initializeWorld();
   }
 
@@ -80,6 +82,8 @@ export class GameEngine {
     }
     this.playerScripts[playerId][unitType] = code;
     console.log(`Script registrado para ${playerId} [${unitType}]`);
+
+    this.saveScripts();
   }
 
   public start() {
@@ -94,6 +98,61 @@ export class GameEngine {
       clearInterval(this.gameLoopInterval);
       this.gameLoopInterval = null;
       console.log("Juego detenido.");
+    }
+  }
+  private resolveCollisions(): void {
+    const entities = Array.from(this.entities.values());
+    const count = entities.length;
+
+    for (let i = 0; i < count; i++) {
+      for (let j = i + 1; j < count; j++) {
+        const entA = entities[i];
+        const entB = entities[j];
+
+        // 1. Si ambos son Estructuras (Edificios), no se empujan entre sí.
+        if (entA instanceof Structure && entB instanceof Structure) continue;
+
+        // 2. Calcular distancias
+        const dist = entA.position.distanceTo(entB.position);
+        const minDist = entA.radius + entB.radius;
+
+        // 3. Si hay colisión (la distancia es menor a la suma de radios)
+        if (dist < minDist && dist > 0.001) {
+          const overlap = minDist - dist; // Cuánto se están solapando
+          
+          const dx = entA.position.x - entB.position.x;
+          const dy = entA.position.y - entB.position.y;
+          
+          // Vector normalizado (dirección del empuje)
+          const nx = dx / dist;
+          const ny = dy / dist;
+
+          // 4. Decidir quién empuja a quién (Pesos)
+          let pushA = 0.5;
+          let pushB = 0.5;
+
+          // Reglas:
+          // - Las Estructuras son muros (peso infinito, no se mueven)
+          // - Las unidades móviles se reparten el empuje
+          if (entA instanceof Structure) { 
+            pushA = 0; 
+            pushB = 1; // B se mueve todo lo necesario
+          } else if (entB instanceof Structure) { 
+            pushA = 1; // A se mueve todo lo necesario
+            pushB = 0; 
+          }
+
+          // 5. Aplicar la corrección de posición
+          if (pushA > 0) {
+            entA.position.x += nx * overlap * pushA;
+            entA.position.y += ny * overlap * pushA;
+          }
+          if (pushB > 0) {
+            entB.position.x -= nx * overlap * pushB;
+            entB.position.y -= ny * overlap * pushB;
+          }
+        }
+      }
     }
   }
 
@@ -136,6 +195,7 @@ export class GameEngine {
     });
 
     // 5. Limpieza de muertos
+    this.resolveCollisions();
     allEntities.forEach(entity => {
       if (entity.isMarkedForDeletion) {
         // Opcional: Evento de muerte visual
@@ -292,4 +352,36 @@ export class GameEngine {
         console.log(`--- Tick ${this.tickCount} | Entidades: ${this.entities.size} | Scripts: ${Object.keys(this.playerScripts).length} ---`);
     }
   }
+  private readonly SCRIPTS_FILE = path.resolve(__dirname, '../../../data/scripts.json');
+
+    private loadScripts() {
+        try {
+            // Verificar si el archivo existe
+            if (fs.existsSync(this.SCRIPTS_FILE)) {
+                const data = fs.readFileSync(this.SCRIPTS_FILE, 'utf-8');
+                this.playerScripts = JSON.parse(data);
+                console.log("💾 Scripts cargados desde disco.");
+            }
+        } catch (error) {
+            console.error("Error cargando scripts:", error);
+            // Si falla, iniciamos vacío para no romper el juego
+            this.playerScripts = {}; 
+        }
+    }
+
+    private saveScripts() {
+        try {
+            // Asegurarnos de que la carpeta 'data' exista
+            const dir = path.dirname(this.SCRIPTS_FILE);
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+
+            // Guardar en disco
+            fs.writeFileSync(this.SCRIPTS_FILE, JSON.stringify(this.playerScripts, null, 2));
+            // console.log("💾 Scripts guardados."); // Comentado para no spammear
+        } catch (error) {
+            console.error("Error guardando scripts:", error);
+        }
+    }
 }
